@@ -33,7 +33,22 @@
         <param name="condition2" value="always_false"/>
     </condition>
 
-    <!-- Conditions for Workflow::Condition::GreedyOR -->
+    <!-- Conditions for Workflow::Condition::LazyAND -->
+
+    <!-- this should evaluate to 'false' -->
+    <condition name="lazy_and_1" class="Workflow::Condition::LazyAND">
+        <param name="condition1" value="always_true"/>
+        <param name="condition2" value="always_false"/>
+        <param name="condition3" value="always_true_2"/>
+    </condition>
+
+    <!-- this should evaluate to 'true' -->
+    <condition name="lazy_and_2" class="Workflow::Condition::LazyAND">
+        <param name="condition1" value="always_true"/>
+        <param name="condition3" value="always_true_2"/>
+    </condition>
+
+    <!-- Conditions for Workflow::Condition::CheckReturn -->
 
     <!-- this should evaluate to 'true' -->
     <condition name="check_ret_1" class="Workflow::Condition::CheckReturn">

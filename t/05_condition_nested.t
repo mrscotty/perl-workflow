@@ -27,7 +27,7 @@ if ($debug) {
     Log::Log4perl::init($CONF_FILE);
 }
 
-plan tests => 16;
+plan tests => 21;
 
 my $workflow_conf  = $cfgbase . '/workflow_def_wfnest.xml';
 my $action_conf    = $cfgbase . '/workflow_activity_wfnest.xml';
@@ -73,18 +73,35 @@ is( $workflow->state, 'INITIALIZED', 'initialized state' );
 $workflow->execute_action('test_greedy_or');
 is( $workflow->state, 'TEST_GREEDY_OR', 'wfcond state after test_greedy_or' );
 $workflow->execute_action('greedy_or_1');
-is( $workflow->state, 'INITIALIZED', 'wfcond state after greedy_or_1' );
+is( $workflow->state, 'INITIALIZED', 'wfcond state after greedy_or_1' )
+    or $workflow->execute_action('ack_subtest_fail');
 
 $workflow->execute_action('test_greedy_or');
 is( $workflow->state, 'TEST_GREEDY_OR', 'wfcond state after test_greedy_or' );
 $workflow->execute_action('greedy_or_2');
 is( $workflow->state, 'SUBTEST_FAIL', 'wfcond state after test_greedy_or' );
-
 $workflow->execute_action('ack_subtest_fail');
 is( $workflow->state, 'INITIALIZED', 'wfcond state after ack_subtest_fail' );
 
 ##################################################
-# RUN TESTS FOR 'Workflow::Condition::GreedyOR'
+# RUN TESTS FOR 'Workflow::Condition::LazyAND'
+##################################################
+
+$workflow->execute_action('test_lazy_and');
+is( $workflow->state, 'TEST_LAZY_AND', 'wfcond state after test_lazy_and' );
+$workflow->execute_action('lazy_and_1');
+is( $workflow->state, 'SUBTEST_FAIL', 'wfcond state after lazy_and_1' );
+$workflow->execute_action('ack_subtest_fail');
+is( $workflow->state, 'INITIALIZED', 'wfcond state after ack_subtest_fail' );
+
+$workflow->execute_action('test_lazy_and');
+is( $workflow->state, 'TEST_LAZY_AND', 'wfcond state after test_lazy_and' );
+$workflow->execute_action('lazy_and_2');
+is( $workflow->state, 'INITIALIZED', 'wfcond state after lazy_and_2' )
+    or $workflow->execute_action('ack_subtest_fail');
+
+##################################################
+# RUN TESTS FOR 'Workflow::Condition::CheckReturn'
 ##################################################
 
 $workflow->execute_action('test_check_return');
